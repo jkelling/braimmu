@@ -201,19 +201,16 @@ void Init::voxels(Brain *brn, int allocated) {
   // find nlocal and nghost
   nlocal = nghost = 0;
   for (k=0; k<nv[2]; k++) {
-    pos[2] = boxlo[2] + (0.5 + k) * vlen;
     for (j=0; j<nv[1]; j++) {
-      pos[1] = boxlo[1] + (0.5 + j) * vlen;
       for (i=0; i<nv[0]; i++) {
-        pos[0] = boxlo[0] + (0.5 + i) * vlen;
 
-        if (pos[0] >= xlo[0] && pos[0] < xhi[0]
-         && pos[1] >= xlo[1] && pos[1] < xhi[1]
-         && pos[2] >= xlo[2] && pos[2] < xhi[2])
+        if (i >= xlo[0] && i <= xhi[0]
+         && j >= xlo[1] && j < xhi[1]
+         && k >= xlo[2] && k < xhi[2])
           nlocal++;
-        else if ( (pos[0] >= xlo[0] - vlen && pos[0] < xhi[0] + vlen)
-               || (pos[1] >= xlo[1] - vlen && pos[1] < xhi[1] + vlen)
-               || (pos[2] >= xlo[2] - vlen && pos[2] < xhi[2] + vlen) )
+        else if ( (i >= xlo[0] - 1 && i <= xhi[0] + 1)
+               || (j >= xlo[1] - 1 && j <= xhi[1] + 1)
+               || (k >= xlo[2] - 1 && k <= xhi[2] + 1) )
           nghost++;
       }
     }
@@ -266,9 +263,9 @@ void Init::voxels(Brain *brn, int allocated) {
       for (i=0; i<nv[0]; i++) {
         pos[0] = boxlo[0] + (0.5 + i) * vlen;
 
-        if (pos[0] >= xlo[0] && pos[0] < xhi[0]
-         && pos[1] >= xlo[1] && pos[1] < xhi[1]
-         && pos[2] >= xlo[2] && pos[2] < xhi[2]) {
+        if (i >= xlo[0] && i <= xhi[0]
+         && j >= xlo[1] && j < xhi[1]
+         && k >= xlo[2] && k < xhi[2]) {
           x[nn][0] = pos[0];
           x[nn][1] = pos[1];
           x[nn][2] = pos[2];
@@ -277,10 +274,10 @@ void Init::voxels(Brain *brn, int allocated) {
           map[tag[nn]] = nn;
           nn++;
         }
-        else if ( (pos[0] >= xlo[0] - vlen && pos[0] < xhi[0] + vlen)
-               || (pos[1] >= xlo[1] - vlen && pos[1] < xhi[1] + vlen)
-               || (pos[2] >= xlo[2] - vlen && pos[2] < xhi[2] + vlen) ) {
 
+        else if ( (i >= xlo[0] - 1 && i <= xhi[0] + 1)
+               || (j >= xlo[1] - 1 && j <= xhi[1] + 1)
+               || (k >= xlo[2] - 1 && k <= xhi[2] + 1) ) {
           x[nn][0] = pos[0];
           x[nn][1] = pos[1];
           x[nn][2] = pos[2];
