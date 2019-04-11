@@ -113,6 +113,22 @@ void Brain::dump_mri(const vector<string> &arg)
 {
 	// get partitions
 	std::vector<std::array<std::pair<int, int>, 3>> xlohi(nproc);
+	std::vector<int> I_AGENTS;
+	{
+		std::vector<std::pair<int,int>> tmp;
+		tmp.reserve(num_agents);
+		for(int a = 0; a < num_agents; ++a)
+		{
+			const auto it = std::find(arg.begin(), arg.end(), ag_str[a]);
+			if(it != arg.end())
+				tmp.push_back(std::make_pair(std::distance(arg.begin(), it)-2, a));
+		}
+		std::sort(tmp.begin(), tmp.end());
+		I_AGENTS.reserve(tmp.size());
+		for(const auto& s: tmp)
+			I_AGENTS.push_back(s.second);
+		printf("I_AGENTS %d %d\n", I_AGENTS.size(), tmp.size());
+	}
 
 	{
 		std::array<std::pair<int, int>, 3> tmp;
@@ -128,7 +144,7 @@ void Brain::dump_mri(const vector<string> &arg)
 	// get sizes
 	std::vector<int> rcounts(nproc), displs(nproc, 0);
 	std::vector<int> g_type;
-	std::array<std::vector<double>, num_agents> g_agents;
+	std::vector<std::vector<double>> g_agents(I_AGENTS.size());
 	{
 		MPI_Gather(&nall,1,MPI_INT
 			,rcounts.data(),1,MPI_INT,0,world);
@@ -141,7 +157,7 @@ void Brain::dump_mri(const vector<string> &arg)
 		if (!me)
 		{
 			g_type.resize(size);
-			for(auto& a : agent)
+			for(auto& a : g_agents)
 				a.resize(size);
 		}
 	}
@@ -149,10 +165,13 @@ void Brain::dump_mri(const vector<string> &arg)
 	// get data
   MPI_Gatherv(type.data(),nall,MPI_INT,g_type.data()
 			,rcounts.data(),displs.data(),MPI_INT,0,world);
-	for(int a = 0; a < agent.size(); ++a)
-		MPI_Gatherv(agent[a].data(),nall,MPI_DOUBLE
+	for(int a = 0; a < g_agents.size(); ++a)
+	{
+		const int AGENT = I_AGENTS[a];
+		MPI_Gatherv(agent[AGENT].data(),nall,MPI_DOUBLE
 				,g_agents[a].data()
 				,rcounts.data(),displs.data(),MPI_DOUBLE,0,world);
+	}
 
 	
   if (!me)
@@ -163,12 +182,7 @@ void Brain::dump_mri(const vector<string> &arg)
 		const int dims5[] = {5, nv[0], nv[1], nv[2], 1, g_agents.size()+1, 1, 1};
 		nim = output->nifti_image_setup(this,arg, dims5, NIFTI_INTENT_VECTOR);
 
-		const int I_TYPE = std::distance(arg.begin()
-				, std::find(arg.begin(), arg.end(), "type"));
-		std::array<int, num_agents> I_AGENTS;
-		for(int a = 0; a < num_agents; ++a)
-			I_AGENTS[a] =  std::distance(arg.begin()
-				, std::find(arg.begin(), arg.end(), ag_str[a]));
+		const int I_TYPE = I_AGENTS.size();
 
     float* data = (float*) nim->data;
 		for(int p = 0; p < nproc; ++p)
