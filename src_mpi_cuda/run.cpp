@@ -53,7 +53,7 @@ void Brain::integrate(int Nrun) {
       double t2;
       t2 = MPI_Wtime();
       if (!me)
-        printf("Step %i, time lapsed = %g sec, speed = %g steps/sec \n",
+        printf("Step %d, time lapsed = %f sec, speed = %f steps/sec \n",
                step, t2 - t0, float(Nlog)/(t2-t1) );
       t1 = t2;
     }
