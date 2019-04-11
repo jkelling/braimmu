@@ -28,7 +28,6 @@ class Init : public Memory {
   void read_mri(class Brain*);
   void boundaries(class Brain*);
   void voxels(class Brain*, int);
-  void neighbor(class Brain*);
   void allocations(class Brain*, int);
   void set_parameters(class Brain*);
 

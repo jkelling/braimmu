@@ -76,11 +76,6 @@ class Brain {
   //vector<tagint> tag;
   std::vector<int> map; // mapping from tag to voxel id
 
-  int num_neigh_max, num_conn_max; // maximum number of neighbors/connections
-  int *num_neigh, *num_conn; // number of neighbors, number of long-range connections
-  int **neigh; // neighbor ids for each voxel
-  tagint **conn; // connection tags for each voxel
-
   /// MRI image variables
   nifti_image *nim;
 

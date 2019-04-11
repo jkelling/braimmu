@@ -142,7 +142,6 @@ void Input::execute_command(Brain *brn) {
       exit(1);
     }
 
-    brn->num_conn_max = stoi((*arg)[0]);
   }
 
   /* Command: parameters - setting the initial values of the parameters.

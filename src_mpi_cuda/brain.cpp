@@ -98,12 +98,6 @@ void Brain::destroy() {
   memory->destroy(x);
   memory->destroy(tag);
 
-  memory->destroy(num_neigh);
-  memory->destroy(neigh);
-
-  //memory->destroy(agent);
-  //memory->destroy(grad);
-
   if(nim)
     nifti_image_free(nim);
 
