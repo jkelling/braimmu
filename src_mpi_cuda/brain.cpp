@@ -229,5 +229,6 @@ void Brain::dump_mri(const vector<string> &arg)
 
     nifti_image_write(nim);
     nifti_image_free(nim);
+    nim = nullptr;
 	}
 }
