@@ -8,6 +8,7 @@
 #include "output.h"
 
 #include <algorithm>
+#include <cassert>
 
 using namespace std;
 using namespace brain_NS;
@@ -184,6 +185,7 @@ void Brain::dump_mri(const vector<string> &arg)
 		const int I_TYPE = I_AGENTS.size();
 
     float* data = (float*) nim->data;
+		const size_t NIM_SIZE = nv[0]*nv[1]*nv[2]*(g_agents.size()+1);
 		for(int p = 0; p < nproc; ++p)
 		{
 			const int K = xlohi[p][2].second - xlohi[p][2].first;
@@ -203,6 +205,7 @@ void Brain::dump_mri(const vector<string> &arg)
 								+ nim->ny * (kk
 									+ nim->nz * ( I_TYPE ) ) );
 
+            assert(cnim < NIM_SIZE);
 						data[cnim] = ptype[sidx];
 					}
 
@@ -222,6 +225,7 @@ void Brain::dump_mri(const vector<string> &arg)
 									+ nim->ny * (kk
 										+ nim->nz * ( I_AGENTS[a] ) ) );
 
+              assert(cnim < NIM_SIZE);
 							data[cnim] = ptype[sidx];
 						}
 			}
