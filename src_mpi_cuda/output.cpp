@@ -798,8 +798,8 @@ tagint Output::find_tag(Brain *brn, double x, double y, double z) {
   int i,j,k;
   tagint itag;
 
-  int *nv = brn->nv;
-  double *boxlo = brn->boxlo;
+  const auto& nv = brn->nv;
+  const auto& boxlo = brn->boxlo;
   double vlen_1 = brn->vlen_1;
 
   i = (int) ((x - boxlo[0]) * vlen_1 - 0.5);

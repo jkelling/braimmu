@@ -52,8 +52,8 @@ class Brain {
   //Run *run;
   //Output *output;
 
-  int *npart;
-  int *nv, *nvl; // number of voxels in each direction, global and local
+  std::array<int, 3> npart;
+  std::array<int, 3> nv, nvl; // number of voxels in each direction, global and local
   tagint nvoxel; // total number of voxels
   int nlocal, nghost, nall; // number of voxels for each core, local/ghost/all
 
@@ -61,8 +61,8 @@ class Brain {
 
   double dt;  // timestep
   int nevery; // period of neural activity = nevery timesteps
-  double *boxlo,*boxhi,*lbox; // box boundaries, and size
-  double *xlo,*xhi; // boundaries for each partition
+  std::array<double, 3> boxlo,boxhi,lbox; // box boundaries, and size
+  std::array<int, 3> xlo,xhi; // boundaries for each partition
 
   double **x; // voxel position
   double vlen, vlen_1, vlen_2, vvol, vvol_1; // voxel size

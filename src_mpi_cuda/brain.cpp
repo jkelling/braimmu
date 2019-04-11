@@ -80,17 +80,6 @@ void Brain::allocations() {
   ds = df = 0.0;
   es = 0.0;
 
-  memory->create(nv,3,"nv");
-  memory->create(nvl,3,"nvl");
-  memory->create(npart,3,"npart");
-
-  memory->create(boxlo,3,"boxlo");
-  memory->create(boxhi,3,"boxhi");
-  memory->create(lbox,3,"lbox");
-
-  memory->create(xlo,3,"xlo");
-  memory->create(xhi,3,"xhi");
-
   memory = new Memory();
   input = new Input();
   init = new Init();
@@ -103,17 +92,6 @@ void Brain::allocations() {
 
 /* ----------------------------------------------------------------------*/
 void Brain::destroy() {
-  memory->destroy(nv);
-  memory->destroy(nvl);
-  memory->destroy(npart);
-
-  memory->destroy(boxlo);
-  memory->destroy(boxhi);
-  memory->destroy(lbox);
-
-  memory->destroy(xlo);
-  memory->destroy(xhi);
-
   memory->destroy(x);
   memory->destroy(tag);
   memory->destroy(map);

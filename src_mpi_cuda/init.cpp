@@ -150,12 +150,12 @@ void Init::boundaries(Brain *brn) {
 
   double vlen = brn->vlen;
 
-  int *npart = brn->npart;
-  int *nv = brn->nv;
+  const auto &npart = brn->npart;
+  auto &nv = brn->nv;
 
-  double *boxlo = brn->boxlo;
-  double *boxhi = brn->boxhi;
-  double *lbox = brn->lbox;
+  const auto &boxlo = brn->boxlo;
+  const auto &boxhi = brn->boxhi;
+  auto &lbox = brn->lbox;
 
   if (brn->nproc != npart[0] * npart[1] * npart[2]) {
     printf("Error: partitions mismatch number of processors. \n");
@@ -191,12 +191,12 @@ void Init::voxels(Brain *brn, int allocated) {
 
   double vlen = brn->vlen;
 
-  int *nv = brn->nv;
+  const auto& nv = brn->nv;
 
-  double *boxlo = brn->boxlo;
+  const auto& boxlo = brn->boxlo;
 
-  double *xlo = brn->xlo;
-  double *xhi = brn->xhi;
+  const auto& xlo = brn->xlo;
+  const auto& xhi = brn->xhi;
 
   // find nlocal and nghost
   nlocal = nghost = 0;
@@ -322,8 +322,8 @@ void Init::voxels(Brain *brn, int allocated) {
   ////////////////
 
   // find nvl
-  for (i=0; i<3; i++)
-    brn->nvl[i] = 1 + static_cast<int>( (x[brn->nall-1][i] - x[0][i]) * brn->vlen_1 );
+  // for (i=0; i<3; i++)
+  //   brn->nvl[i] = 1 + static_cast<int>( (x[brn->nall-1][i] - x[0][i]) * brn->vlen_1 );
 
 }
 
@@ -344,7 +344,7 @@ void Init::neighbor(Brain *brn) {
   int *map = brn->map;
 
   double vlen_1 = brn->vlen_1;
-  double *boxlo = brn->boxlo;
+  const auto& boxlo = brn->boxlo;
 
   brn->num_neigh_max = 3;
 
@@ -418,7 +418,7 @@ void Init::neighbor(Brain *brn) {
  * Find the tag of a voxel from its coordinates i,j,k
  * ----------------------------------------------------------------------*/
 tagint Init::find_me(Brain *brn, int i, int j, int k) {
-  int *nv = brn->nv;
+  const auto& nv = brn->nv;
   tagint itag;
 
   if (i < 0 || i >= nv[0])
@@ -499,11 +499,11 @@ int Init::mri_boundaries(Brain *brn, nifti_image *nim) {
 
   double vlen = brn->vlen;
 
-  int *nv = brn->nv;
+  auto& nv = brn->nv;
 
-  double *boxlo = brn->boxlo;
-  double *boxhi = brn->boxhi;
-  double *lbox = brn->lbox;
+  auto& boxlo = brn->boxlo;
+  auto& boxhi = brn->boxhi;
+  auto& lbox = brn->lbox;
 
   double conver_fac = 1.0;
   if (nim->xyz_units == NIFTI_UNITS_METER)

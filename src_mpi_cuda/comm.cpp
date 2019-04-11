@@ -28,6 +28,51 @@ Comm::~Comm() {
  * and its communicating neighbor partitions.
  * ----------------------------------------------------------------------*/
 void Comm::partition(Brain *brn) {
+
+	std::array<int, 3> xyzme;
+	{
+		int tmpme = brn->me;
+		xyzme[0] = brn->nv[0] % brn->npart[0];
+		tmpme /= brn->npart[0];
+		xyzme[1] = brn->nv[0] % brn->npart[1];
+		tmpme /= brn->npart[1];
+		xyzme[2] = brn->nv[0] % brn->npart[2];
+	}
+	std::array<int, 3> dx;
+	std::array<int, 3> mdx;
+	for(int i = 0; i < 3; ++i)
+	{
+		dx[i] = brn->nv[i]/brn->npart[i];
+		mdx[i] = brn->nv[i]%brn->npart[i];
+	}
+
+	for(int i = 0; i < 3; ++i)
+	{
+		brn->xlo[i] = xyzme[i]*dx[i]
+			+ ((xyzme[i] < mdx[i]) ? xyzme[i] : mdx[i]);
+		brn->xhi[i] = brn->xlo[i] + dx[i]
+			+ (xyzme[i] < mdx[i]);
+	}
+
+	const auto i = xyzme[0];
+	const auto j = xyzme[1];
+	const auto k = xyzme[2];
+
+  comm_side[XLO] = find_me(brn,i-1,j,k);
+  comm_side[XHI] = find_me(brn,i+1,j,k);
+  comm_side[YLO] = find_me(brn,i,j-1,k);
+  comm_side[YHI] = find_me(brn,i,j+1,k);
+  comm_side[ZLO] = find_me(brn,i,j,k-1);
+  comm_side[ZHI] = find_me(brn,i,j,k+1);
+  
+	for(int i = 0; i < 3; ++i)
+	{
+	  brn->nvl[i] = brn->xhi[i]-brn->xlo[i] +2;
+	}
+
+//////////////
+
+#if 0
   int i,j,k;
   double pos[3],POS[3],DX[3];
 
@@ -72,6 +117,7 @@ void Comm::partition(Brain *brn) {
     xlo[i] = POS[i] - 0.5*DX[i];
     xhi[i] = POS[i] + 0.5*DX[i];
   }
+#endif
 
 }
 
@@ -80,6 +126,7 @@ void Comm::partition(Brain *brn) {
  * dimension, dim;
  * ----------------------------------------------------------------------*/
 void Comm::balance(Brain *brn) {
+#if 0
   int b_flag, cid, sid;
 
   if (!b_dim.compare("x"))
@@ -101,11 +148,11 @@ void Comm::balance(Brain *brn) {
 
   MPI_Comm world = brn->world;
 
-  int *nv = brn->nv;
+  const auto& nv = brn->nv;
 
-  int *npart = brn->npart;
-  double *xlo = brn->xlo;
-  double *xhi = brn->xhi;
+  const auto& npart = brn->npart;
+  const auto& xlo = brn->xlo;
+  const auto& xhi = brn->xhi;
 
   int nall = brn->nall;
 
@@ -148,9 +195,6 @@ void Comm::balance(Brain *brn) {
   destroy(s_buf);
 
   // unpack
-  int *nloop = NULL;
-  double *xlo_all = NULL;
-  double *xhi_all = NULL;
 
   create(nloop,nproc,"comm:nloop");
   create(xlo_all,nproc,"comm:xlo_all");
@@ -273,6 +317,7 @@ void Comm::balance(Brain *brn) {
 
   destroy(xlo_new);
   destroy(xhi_new);
+#endif
 
 }
 
@@ -289,8 +334,8 @@ void Comm::comm_init(Brain *brn) {
 
   double **x = brn->x;
 
-  double *xlo = brn->xlo;
-  double *xhi = brn->xhi;
+  const auto& xlo = brn->xlo;
+  const auto& xhi = brn->xhi;
 
   // find buffer size
   max_buf_size = 0;
@@ -331,7 +376,7 @@ void Comm::allocations(Brain *brn) {
  * Find the rank of a partition, with coordinates i,j,k
  * ----------------------------------------------------------------------*/
 int Comm::find_me(Brain *brn, int i, int j, int k) {
-  int *npart = brn->npart;
+  const auto& npart = brn->npart;
 
   if (i < 0 || i >= npart[0])
     return -1;
@@ -348,7 +393,7 @@ int Comm::find_me(Brain *brn, int i, int j, int k) {
  *  * Find the local id of a voxel with coordinates i,j,k
  *   * ----------------------------------------------------------------------*/
 int Comm::find_id(Brain *brn, int i, int j, int k) {
-  int *nvl = brn->nvl;
+  const auto& nvl = brn->nvl;
 
   return i + nvl[0] * (j + nvl[1]*k);
 
@@ -480,7 +525,7 @@ void Comm::forward_pack(Brain *brn, int flag) {
 
   double vlen = brn->vlen;
 
-  int *nvl = brn->nvl;
+  const auto& nvl = brn->nvl;
 
   //double *xlo = brn->xlo;
   //double **x = brn->x;
@@ -687,7 +732,7 @@ void Comm::reverse_pack(Brain *brn, int flag) {
 
   int nall = brn->nall;
 
-  double *xhi = brn->xhi;
+  const auto& xhi = brn->xhi;
   double **x = brn->x;
 
   int c = 0;
