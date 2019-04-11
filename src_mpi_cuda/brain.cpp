@@ -96,7 +96,6 @@ void Brain::allocations() {
 void Brain::destroy() {
   memory->destroy(x);
   memory->destroy(tag);
-  memory->destroy(map);
 
   memory->destroy(num_neigh);
   memory->destroy(neigh);

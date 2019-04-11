@@ -248,7 +248,7 @@ void Init::voxels(Brain *brn, int allocated) {
 
   double **x = brn->x;
   tagint *tag = brn->tag;
-  int *map = brn->map;
+  auto& map = brn->map;
 
   for (i=0; i<brn->nvoxel; i++)
     map[i] = -1;
@@ -338,7 +338,7 @@ void Init::neighbor(Brain *brn) {
   //int nall = brn->nall;
 
   double **x = brn->x;
-  int *map = brn->map;
+  auto& map = brn->map;
 
   double vlen_1 = brn->vlen_1;
   const auto& boxlo = brn->boxlo;
@@ -451,7 +451,7 @@ void Init::allocations(Brain *brn, int allocated) {
   //brn->tag.resize(brn->nall);
 
   if (!allocated)
-    create(brn->map,brn->nvoxel,"map");
+		brn->map.resize(brn->nvoxel);
 
   //create(brn->agent,num_agents,brn->nall,"agent");
   for (auto &a: brn->agent) {
@@ -544,7 +544,7 @@ void Init::mri_topology(Brain *brn, nifti_image *nim) {
   int nlocal = brn->nlocal;
   int nall = brn->nall;
 
-  int *map = brn->map;
+  auto& map = brn->map;
 
   double vlen_1 = brn->vlen_1;
 
