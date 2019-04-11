@@ -55,7 +55,7 @@ class Brain {
   std::array<int, 3> npart;
   std::array<int, 3> nv, nvl; // number of voxels in each direction, global and local
   tagint nvoxel; // total number of voxels
-  int nlocal, nghost, nall; // number of voxels for each core, local/ghost/all
+  size_t nlocal, nghost, nall; // number of voxels for each core, local/ghost/all
 
   int step, Nrun, Nlog; // step, number of steps, log output
 
@@ -103,6 +103,8 @@ class Brain {
   double ka; // rate of astrogliosis
 
   MPI_Comm world;
+
+  void dump_mri(const vector<string>&);
 
 };
 

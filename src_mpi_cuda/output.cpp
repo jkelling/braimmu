@@ -472,7 +472,8 @@ void Output::dump(Brain *brn) {
     if (brn->step % stoi(dump_arg[i][1]) != 0) continue;
 
     if (!dump_arg[i][0].compare("mri"))
-      dump_mri(brn,dump_arg[i]);
+      // dump_mri(brn,dump_arg[i]);
+      brn->dump_mri(dump_arg[i]);
     else if (!dump_arg[i][0].compare("txt"))
       dump_txt(brn,dump_arg[i]);
     else {
